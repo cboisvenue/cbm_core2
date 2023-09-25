@@ -1,6 +1,6 @@
 box::use(testthat[test_that, expect_equal])
 box::use(reticulate[reticulate_import = import, dict])
-box::use(../../../../R/libcbm/cbm_exn/spinup/cbm_exn_spinup)
+box::use(spinup_module = ../../../../R/libcbm/cbm_exn/spinup/cbm_exn_spinup)
 
 test_that(
   "spinup basic integration test works", {
@@ -40,6 +40,7 @@ test_that(
       last_pass_disturbance_type = rep(1L, n_stands)
     )
     param_path <- libcbm_resources$get_cbm_exn_parameters_dir()
+
     cbm_exn_parameters <- dict(
       # TODO: need a solution for loading json that works correctly
       # for pools and flux configs
@@ -66,7 +67,7 @@ test_that(
       )
     )
     out_dir <- tempdir()
-    cbm_vars <- cbm_exn_spinup$spinup(
+    cbm_vars <- spinup_module$spinup(
       dict(
         parameters = spinup_parameters,
         increments = stand_increments
