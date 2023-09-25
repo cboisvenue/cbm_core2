@@ -6,10 +6,9 @@ box::use(
     expectsInput,
     createsOutput,
     inputObjects,
-
   ]
 )
-box::use(reticulate[reticulate_import = import, dict])
+box::use(reticulate[dict])
 box::use(spinup_module = ./cbm_exn_spinup)
 
 defineModule(
