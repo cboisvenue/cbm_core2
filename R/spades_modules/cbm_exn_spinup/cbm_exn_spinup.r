@@ -1,13 +1,13 @@
-box::use(
-  SpaDES.core[
-    defineParameter,
-    defineModule,
-    bindrows,
-    expectsInput,
-    createsOutput,
-    inputObjects,
-  ]
-)
+#box::use(
+#  SpaDES.core[
+#    defineParameter,
+#    defineModule,
+#    bindrows,
+#    expectsInput,
+#    createsOutput,
+#    inputObjects,
+#  ]
+#)
 box::use(reticulate[dict])
 box::use(spinup_module = ../../libcbm/cbm_exn/cbm_exn_spinup)
 
@@ -73,9 +73,11 @@ defineModule(
       createsOutput(
         objectName = "pools",
         objectClass = "data.frame",
+        desc = "",
+        sourceURL = NA
       )
     )
-  ),
+  )
 )
 
 doEvent.cbm_exn_spinup <- function(sim, eventTime, eventType, debug = TRUE) {
@@ -88,6 +90,7 @@ doEvent.cbm_exn_spinup <- function(sim, eventTime, eventType, debug = TRUE) {
 }
 
 spinup <- function(sim) {
+
   print("hello??")
   
   cbm_exn_parameters <- dict(
