@@ -52,7 +52,7 @@ test_that(
   "spinup basic integration test works with spades", {
     out <- SpaDES.project::setupProject(
       name = "cbm_exn_spinup_integration_test",
-      paths = list(modulePath = "."),
+      paths = list(modulePath = "C:\\Users\\scott\\dev\\cbm_core2\\R\\"),
       options = list(
         repos = c(
           ## latest PredictievEcology packages

@@ -9,7 +9,7 @@ box::use(
   ]
 )
 box::use(reticulate[dict])
-box::use(spinup_module = ./cbm_exn_spinup)
+box::use(spinup_module = ../../libcbm/cbm_exn/cbm_exn_spinup)
 
 defineModule(
   sim,

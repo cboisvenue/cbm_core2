@@ -1,6 +1,6 @@
 box::use(testthat[test_that, expect_equal])
 box::use(reticulate[reticulate_import = import, dict])
-box::use(spinup_module = ../../../../R/libcbm/cbm_exn/spinup/cbm_exn_spinup)
+box::use(spinup_module = ../../../../R/libcbm/cbm_exn/cbm_exn_spinup)
 
 test_that(
   "spinup basic integration test works", {
