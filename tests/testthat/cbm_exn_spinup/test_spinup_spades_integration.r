@@ -50,7 +50,7 @@ test_that(
       name = "cbm_exn_spinup_integration_test",
       paths = list(
         modulePath = file.path(
-          getwd(), "..", "..", "..", "R", "spades_modules")
+          getwd(), "..", "..", "..", "R")
       ),
       options = list(
         repos = c(
