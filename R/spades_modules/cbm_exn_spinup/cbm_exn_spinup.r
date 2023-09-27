@@ -31,7 +31,7 @@ defineModule(
     documentation = list("README.md"),
     reqdPkgs = list(
       "PredictiveEcology/reproducible@development (>= 2.0.8.9001)",
-      "PredictiveEcology/SpaDES.core@defineModule (>= 2.0.2.9005)",
+      "PredictiveEcology/SpaDES.core@development (>= 2.0.2.9005)",
       "PredictiveEcology/LandR@development"
     ),
     parameters = rbind(
