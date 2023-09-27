@@ -7,7 +7,6 @@ test_that(
     box::use(testthat[test_that, expect_equal])
     box::use(reticulate[reticulate_import = import])
 
-
     libcbm_resources <- reticulate_import("libcbm.resources")
 
     param_path <- libcbm_resources$get_cbm_exn_parameters_dir()
@@ -69,6 +68,7 @@ test_that(
       ),
       modules = "cbm_exn_spinup",
       times = list(start = 1998, end = 2000),
+      packages = "PredictiveEcology/SpaDES.core@development (>= 2.0.2.9005)",
 
       spinup_parameters = spinup_parameters,
       stand_increments = stand_increments,
