@@ -1,15 +1,3 @@
-#box::use(
-#  SpaDES.core[
-#    defineParameter,
-#    defineModule,
-#    bindrows,
-#    expectsInput,
-#    createsOutput,
-#    inputObjects,
-#  ]
-#)
-box::use(reticulate[dict])
-box::use(spinup_module = ../../libcbm/cbm_exn/cbm_exn_spinup)
 
 defineModule(
   sim,
@@ -87,12 +75,13 @@ doEvent.cbm_exn_spinup <- function(sim, eventTime, eventType, debug = TRUE) {
       spinup(sim)
     }
   )
+  return(invisible(sim))
 }
 
 spinup <- function(sim) {
-
-  print("hello??")
-  
+  box::use(reticulate[dict])
+  box::use(libcbmr)
+   
   cbm_exn_parameters <- dict(
     slow_mixing_rate = sim$slow_mixing_rate,
     turnover_parameters = sim$turnover_parameters,
@@ -102,12 +91,13 @@ spinup <- function(sim) {
     disturbance_matrix_value = sim$disturbance_matrix_value,
     disturbance_matrix_association = sim$disturbance_matrix_association
   )
-  cbm_vars <- spinup_module$spinup(
+  cbm_vars <- libcbmr::spinup(
     dict(
         parameters = sim$spinup_parameters,
         increments = sim$stand_increments
-      ),
+    ),
     cbm_exn_parameters
   )
   sim$pools <- cbm_vars$pools
+  return(invisible(sim))
 }
