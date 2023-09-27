@@ -6,9 +6,11 @@ libcbm_resources <- reticulate_import("libcbm.resources")
 
 param_path <- libcbm_resources$get_cbm_exn_parameters_dir()
 
-get_test_net_increments <- function() {
-  net_increments <- read.csv(
-    file.path(
+test_that(
+  "spinup basic integration test works with spades", {
+    get_test_net_increments <- function() {
+      net_increments <- read.csv(
+        file.path(
       libcbm_resources$get_test_resources_dir(),
       "cbm_exn_net_increments",
       "net_increments.csv"
@@ -44,12 +46,9 @@ get_test_spinup_parameters <- function(){
     mean_annual_temperature = rep(2.55, n_stands),
     historical_disturbance_type = rep(1L, n_stands),
     last_pass_disturbance_type = rep(1L, n_stands)
-  )
-  return(spinup_parameters)
-}
-
-test_that(
-  "spinup basic integration test works with spades", {
+      )
+      return(spinup_parameters)
+    }
     out <- SpaDES.project::setupProject(
       name = "cbm_exn_spinup_integration_test",
       paths = list(
