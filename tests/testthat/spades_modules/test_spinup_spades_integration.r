@@ -98,6 +98,6 @@ test_that(
     )
 
     result <- do.call(simInitAndSpades, out)
-
+    testthat::expect_equal(nrow(result$pools), 2)
   }
 )
