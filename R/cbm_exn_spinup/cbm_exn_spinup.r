@@ -91,7 +91,7 @@ spinup <- function(sim) {
     disturbance_matrix_value = sim$disturbance_matrix_value,
     disturbance_matrix_association = sim$disturbance_matrix_association
   )
-  cbm_vars <- libcbmr::spinup(
+  cbm_vars <- libcbmr::cbm_exn_spinup(
     dict(
         parameters = sim$spinup_parameters,
         increments = sim$stand_increments
