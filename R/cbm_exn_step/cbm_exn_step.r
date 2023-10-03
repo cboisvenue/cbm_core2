@@ -19,8 +19,7 @@ defineModule(
     documentation = list("README.md"),
     reqdPkgs = list(
       "PredictiveEcology/reproducible@development (>= 2.0.8.9001)",
-      "PredictiveEcology/SpaDES.core@development (>= 2.0.2.9005)",
-      "PredictiveEcology/LandR@development"
+      "PredictiveEcology/SpaDES.core@development (>= 2.0.2.9005)"
     ),
     parameters = rbind(
       defineParameter("slow_mixing_rate", "data.frame", NULL, NA, NA, ""),
@@ -63,29 +62,29 @@ defineModule(
     ),
     outputObjects = bindrows(
       createsOutput(
-        objectName = "pools",
+        objectName = "pools_out",
         objectClass = "data.frame",
         desc = "",
         sourceURL = NA
       ),
-      createsOutput(
-        objectName = "flux",
-        objectClass = "data.frame",
-        desc = "",
-        sourceURL = NA
-      ),
-      createsOutput(
-        objectName = "parameters",
-        objectClass = "data.frame",
-        desc = "",
-        sourceURL = NA
-      ),
-      createsOutput(
-        objectName = "state",
-        objectClass = "data.frame",
-        desc = "",
-        sourceURL = NA
-      )
+      #createsOutput(
+      #  objectName = "flux",
+      #  objectClass = "data.frame",
+      #  desc = "",
+      #  sourceURL = NA
+      #),
+      #createsOutput(
+      #  objectName = "parameters",
+      #  objectClass = "data.frame",
+      #  desc = "",
+      #  sourceURL = NA
+      #),
+      #createsOutput(
+      #  objectName = "state",
+      #  objectClass = "data.frame",
+      #  desc = "",
+      #  sourceURL = NA
+      #)
     )
   )
 )
@@ -94,7 +93,9 @@ doEvent.cbm_exn_step <- function(sim, eventTime, eventType, debug = TRUE) {
   switch(
     eventType,
     init = {
-      spinup(sim)
+      # TODO this is likely not the correct way to structure 
+      # the event, need to clarify this
+      step(sim)
     }
   )
   return(invisible(sim))
@@ -115,14 +116,16 @@ step <- function(sim) {
   )
   cbm_vars <- libcbmr::cbm_exn_step(
     dict(
-      parameters = sim$spinup_parameters,
-      increments = sim$stand_increments
+      pools = sim$pools,
+      flux = sim$flux,
+      parameters = sim$parameters,
+      state = sim$state
     ),
     cbm_exn_parameters
   )
-  sim$pools <- cbm_vars$pools
-  sim$flux <- cbm_vars$flux
-  sim$parameters <- cbm_vars$parameters
-  sim$state <- cbm_vars$state
+  sim$pools_out <- cbm_vars$pools
+  #sim$flux <- cbm_vars$flux
+#  sim$parameters <- cbm_vars$parameters
+#  sim$state <- cbm_vars$state
   return(invisible(sim))
 }
