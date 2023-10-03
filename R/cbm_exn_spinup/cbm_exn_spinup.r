@@ -63,6 +63,24 @@ defineModule(
         objectClass = "data.frame",
         desc = "",
         sourceURL = NA
+      ),
+      createsOutput(
+        objectName = "flux",
+        objectClass = "data.frame",
+        desc = "",
+        sourceURL = NA
+      ),
+      createsOutput(
+        objectName = "parameters",
+        objectClass = "data.frame",
+        desc = "",
+        sourceURL = NA
+      ),
+      createsOutput(
+        objectName = "state",
+        objectClass = "data.frame",
+        desc = "",
+        sourceURL = NA
       )
     )
   )
@@ -81,7 +99,7 @@ doEvent.cbm_exn_spinup <- function(sim, eventTime, eventType, debug = TRUE) {
 spinup <- function(sim) {
   box::use(reticulate[dict])
   box::use(libcbmr)
-   
+
   cbm_exn_parameters <- dict(
     slow_mixing_rate = sim$slow_mixing_rate,
     turnover_parameters = sim$turnover_parameters,
@@ -93,11 +111,14 @@ spinup <- function(sim) {
   )
   cbm_vars <- libcbmr::cbm_exn_spinup(
     dict(
-        parameters = sim$spinup_parameters,
-        increments = sim$stand_increments
+      parameters = sim$spinup_parameters,
+      increments = sim$stand_increments
     ),
     cbm_exn_parameters
   )
   sim$pools <- cbm_vars$pools
+  sim$flux <- cbm_vars$flux
+  sim$parameters <- cbm_vars$parameters
+  sim$state <- cbm_vars$state
   return(invisible(sim))
 }
