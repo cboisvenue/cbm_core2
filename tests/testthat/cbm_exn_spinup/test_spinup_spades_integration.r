@@ -1,5 +1,3 @@
-
-
 test_that(
   "spinup basic integration test works with spades", {
 
@@ -50,7 +48,8 @@ test_that(
       name = "cbm_exn_spinup_integration_test",
       paths = list(
         modulePath = file.path(
-          getwd(), "..", "..", "..", "R")
+          getwd(), "..", "..", "..", "R"
+        )
       ),
       options = list(
         repos = c(
