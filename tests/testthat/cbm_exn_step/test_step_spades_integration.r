@@ -78,7 +78,7 @@ test_that(
       pools = cbm_vars$pools,
       flux = cbm_vars$flux,
       state = cbm_vars$state,
-      variables = cbm_vars$variables,
+      parameters = cbm_vars$parameters,
       require = "PredictiveEcology/SpaDES.core@development",
       # add the defualt parameters for integration testing purposes
       slow_mixing_rate = read.csv(
