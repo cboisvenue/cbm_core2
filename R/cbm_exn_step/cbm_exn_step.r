@@ -62,29 +62,29 @@ defineModule(
     ),
     outputObjects = bindrows(
       createsOutput(
-        objectName = "pools_out",
+        objectName = "pools",
         objectClass = "data.frame",
         desc = "",
         sourceURL = NA
       ),
-      #createsOutput(
-      #  objectName = "flux",
-      #  objectClass = "data.frame",
-      #  desc = "",
-      #  sourceURL = NA
-      #),
-      #createsOutput(
-      #  objectName = "parameters",
-      #  objectClass = "data.frame",
-      #  desc = "",
-      #  sourceURL = NA
-      #),
-      #createsOutput(
-      #  objectName = "state",
-      #  objectClass = "data.frame",
-      #  desc = "",
-      #  sourceURL = NA
-      #)
+      createsOutput(
+        objectName = "flux",
+        objectClass = "data.frame",
+        desc = "",
+        sourceURL = NA
+      ),
+      createsOutput(
+        objectName = "parameters",
+        objectClass = "data.frame",
+        desc = "",
+        sourceURL = NA
+      ),
+      createsOutput(
+        objectName = "state",
+        objectClass = "data.frame",
+        desc = "",
+        sourceURL = NA
+      )
     )
   )
 )
@@ -123,9 +123,9 @@ step <- function(sim) {
     ),
     cbm_exn_parameters
   )
-  sim$pools_out <- cbm_vars$pools
-  #sim$flux <- cbm_vars$flux
-#  sim$parameters <- cbm_vars$parameters
-#  sim$state <- cbm_vars$state
+  sim$pools <- cbm_vars$pools
+  sim$flux <- cbm_vars$flux
+  sim$parameters <- cbm_vars$parameters
+  sim$state <- cbm_vars$state
   return(invisible(sim))
 }
