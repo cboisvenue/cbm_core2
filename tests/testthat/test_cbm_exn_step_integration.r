@@ -1,54 +1,60 @@
 test_that(
-  "spinup basic integration test works with spades", {
+  "step basic integration test works with spades", {
 
     box::use(SpaDES.project)
     box::use(testthat[test_that, expect_equal])
     box::use(reticulate[reticulate_import = import])
 
+    json <- reticulate_import("json")
+    cbm_exn_variables <- reticulate_import(
+      "libcbm.model.cbm_exn.cbm_exn_variables"
+    )
     libcbm_resources <- reticulate_import("libcbm.resources")
+    backends <- reticulate_import("libcbm.storage.backends")
 
     param_path <- libcbm_resources$get_cbm_exn_parameters_dir()
-    n_stands <- 2
-    net_increments <- read.csv(
-      file.path(
-        libcbm_resources$get_test_resources_dir(),
-        "cbm_exn_net_increments",
-        "net_increments.csv"
-      )
+    pools <- json$loads(
+      paste(readLines(file.path(param_path, "pools.json")), collapse = " ")
+    )
+    flux_config <- json$loads(
+      paste(readLines(file.path(param_path, "flux.json")), collapse = " ")
+    )
+    flux_names <- lapply(flux_config, function(x) x["name"])
+    n_stands <- 2L
+
+    cbm_vars <- cbm_exn_variables$init_cbm_vars(
+      n_stands, pools, flux_names, backends$BackendType$pandas
     )
 
-    colnames(net_increments) <- c(
-      "age", "merch_inc", "foliage_inc", "other_inc"
-    )
-    stand_increments <- NULL
-    n_stands <- 2
-    for (i in 0:(n_stands - 1)) {
-      copied_increments <- data.frame(net_increments)
-      copied_increments <- cbind(data.frame(row_idx = i), copied_increments)
-      stand_increments <- rbind(
-        stand_increments, copied_increments
-      )
-    }
+    # convert to the dict[str: pd.DataFrame] format expected by cbm_exn
+    # step by default
+    cbm_vars <- cbm_vars$to_pandas()
+    # set some reasonable values
+    cbm_vars$pools[, ] <- 1.0
+    cbm_vars$flux[, ] <- 0.0
 
-    spinup_parameters <- data.frame(
-      age = sample(0L:60L, n_stands, replace = TRUE),
-      area = rep(1.0, n_stands),
-      delay = rep(0L, n_stands),
-      return_interval = rep(125L, n_stands),
-      min_rotations = rep(10L, n_stands),
-      max_rotations = rep(30L, n_stands),
-      spatial_unit_id = rep(17L, n_stands), # Ontario/Mixedwood plains
-      species = rep(20L, n_stands), # red pine
-      mean_annual_temperature = rep(2.55, n_stands),
-      historical_disturbance_type = rep(1L, n_stands),
-      last_pass_disturbance_type = rep(1L, n_stands)
-    )
+    cbm_vars$parameters[, "mean_annual_temperature"] <- -1.0
+    cbm_vars$parameters[, "disturbance_type"] <- 0L
+    cbm_vars$parameters[, "merch_inc"] <- 0.1
+    cbm_vars$parameters[, "foliage_inc"] <- 0.01
+    cbm_vars$parameters[, "other_inc"] <- 0.05
+
+    cbm_vars$state[, "area"] <- 1.0
+    cbm_vars$state[, "spatial_unit_id"] <- 3L
+    cbm_vars$state[, "land_class_id"] <- 0L
+    cbm_vars$state[, "age"] <- 100L
+    cbm_vars$state[, "species"] <- 6L
+    cbm_vars$state[, "sw_hw"] <- 0L
+    cbm_vars$state[, "time_since_last_disturbance"] <- 0L
+    cbm_vars$state[, "time_since_land_use_change"] <- 0L
+    cbm_vars$state[, "last_disturbance_type"] <- 0L
+    cbm_vars$state[, "enabled"] <- 1L
 
     out <- SpaDES.project::setupProject(
-      name = "cbm_exn_spinup_integration_test",
+      name = "cbm_exn_step_integration_test",
       paths = list(
         modulePath = file.path(
-          getwd(), "..", "..", "..", "R"
+          getwd(), "..", "..", "R"
         )
       ),
       options = list(
@@ -65,12 +71,14 @@ test_that(
         # Require.offlineMode = TRUE,
         spades.moduleCodeChecks = FALSE
       ),
-      modules = "cbm_exn_spinup",
+      modules = "cbm_exn_step",
       times = list(start = 1998, end = 2000),
       packages = "PredictiveEcology/SpaDES.core@development (>= 2.0.2.9005)",
 
-      spinup_parameters = spinup_parameters,
-      stand_increments = stand_increments,
+      pools = cbm_vars$pools,
+      flux = cbm_vars$flux,
+      state = cbm_vars$state,
+      parameters = cbm_vars$parameters,
       require = "PredictiveEcology/SpaDES.core@development",
       # add the defualt parameters for integration testing purposes
       slow_mixing_rate = read.csv(
