@@ -21,20 +21,44 @@ defineModule(
       "PredictiveEcology/reproducible@development (>= 2.0.8.9001)",
       "PredictiveEcology/SpaDES.core@development (>= 2.0.2.9005)"
     ),
-    parameters = rbind(
-      defineParameter("slow_mixing_rate", "data.frame", NULL, NA, NA, ""),
-      defineParameter("turnover_parameters", "data.frame", NULL, NA, NA, ""),
-      defineParameter("species", "data.frame", NULL, NA, NA, ""),
-      defineParameter("root_parameters", "data.frame", NULL, NA, NA, ""),
-      defineParameter("decay_parameters", "data.frame", NULL, NA, NA, ""),
-      defineParameter(
-        "disturbance_matrix_value", "data.frame", NULL, NA, NA, ""
-      ),
-      defineParameter(
-        "disturbance_matrix_association", "data.frame", NULL, NA, NA, ""
-      )
-    ),
+    parameters = NULL,
     inputObjects = bindrows(
+      expectsInput(
+        objectName = "step_ops",
+        objectClass = "list",
+        desc = (
+          "structured object containing pool flow matrices for the time step"
+        ),
+        sourceURL = NA
+      ),
+      expectsInput(
+        objectName = "step_dist_ops_sequence",
+        objectClass = "list",
+        desc = paste(
+          "list of names referencing `step_ops` defining the order of ",
+          "operations to apply for disturbances in a timestep",
+          sep = ""
+        ),
+        sourceURL = NA
+      ),
+      expectsInput(
+        objectName = "step_ops_sequence",
+        objectClass = "list",
+        desc = paste(
+          "list of names referencing `step_ops` to defining the order of ",
+          "operations to apply for annual process dynamics in a timestep",
+          sep = ""
+        ),
+        sourceURL = NA
+      ),
+      expectsInput(
+        objectName = "model_config",
+        objectClass = "list",
+        desc = (
+          "definitions for pools/flux_indicators and other model parameters"
+        ),
+        sourceURL = NA
+      ),
       expectsInput(
         objectName = "pools",
         objectClass = "data.frame",
@@ -44,7 +68,7 @@ defineModule(
       expectsInput(
         objectName = "flux",
         objectClass = "data.frame",
-        desc = "",
+        desc = "storage for carbon pool flux during the step.  ",
         sourceURL = NA
       ),
       expectsInput(
@@ -105,15 +129,6 @@ step <- function(sim) {
   box::use(reticulate[dict])
   box::use(libcbmr)
 
-  cbm_exn_parameters <- dict(
-    slow_mixing_rate = sim$slow_mixing_rate,
-    turnover_parameters = sim$turnover_parameters,
-    species = sim$species,
-    root_parameters = sim$root_parameters,
-    decay_parameters = sim$decay_parameters,
-    disturbance_matrix_value = sim$disturbance_matrix_value,
-    disturbance_matrix_association = sim$disturbance_matrix_association
-  )
   cbm_vars <- libcbmr::cbm_exn_step(
     dict(
       pools = sim$pools,
@@ -121,7 +136,10 @@ step <- function(sim) {
       parameters = sim$parameters,
       state = sim$state
     ),
-    cbm_exn_parameters
+    sim$step_ops,
+    sim$step_dist_ops_sequence,
+    sim$step_ops_sequence,
+    sim$model_config
   )
   sim$pools <- cbm_vars$pools
   sim$flux <- cbm_vars$flux
