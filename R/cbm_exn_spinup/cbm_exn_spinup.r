@@ -29,17 +29,6 @@ defineModule(
           "CSV outputs to the specified directory",
           sep = ""
         )
-      ),
-      defineParameter("slow_mixing_rate", "data.frame", NULL, NA, NA, ""),
-      defineParameter("turnover_parameters", "data.frame", NULL, NA, NA, ""),
-      defineParameter("species", "data.frame", NULL, NA, NA, ""),
-      defineParameter("root_parameters", "data.frame", NULL, NA, NA, ""),
-      defineParameter("decay_parameters", "data.frame", NULL, NA, NA, ""),
-      defineParameter(
-        "disturbance_matrix_value", "data.frame", NULL, NA, NA, ""
-      ),
-      defineParameter(
-        "disturbance_matrix_association", "data.frame", NULL, NA, NA, ""
       )
     ),
     inputObjects = bindrows(
@@ -50,9 +39,35 @@ defineModule(
         sourceURL = NA
       ),
       expectsInput(
-        objectName = "stand_increments",
+        objectName = "growth_increments",
         objectClass = "data.frame",
-        desc = "",
+        desc = paste(
+          "This is a dataframe with columns",
+          "row_idx, age, merch_inc, foliage_inc, ",
+          "other_inc representing the age/increment ",
+          "series for each defined simulation area",
+          sep = ""
+        ),
+        sourceURL = NA
+      ),
+      expectsInput(
+        objectName = "spinup_ops",
+        objectClass = "list",
+        desc = paste(
+          "Structured object describing the Carbon flows for the spinup ",
+          "operations",
+          sep = ""
+        ),
+        sourceURL = NA
+      ),
+      expectsInput(
+        objectName = "spinup_op_sequence",
+        objectClass = "list",
+        desc = paste(
+          "list of op names, as defined in spinup_ops defining the order ",
+          "in which operations are applied",
+          sep = ""
+        ),
         sourceURL = NA
       )
     ),
@@ -60,13 +75,17 @@ defineModule(
       createsOutput(
         objectName = "pools",
         objectClass = "data.frame",
-        desc = "",
+        desc = "Dataframe of pools at the end of the spinup process",
         sourceURL = NA
       ),
       createsOutput(
         objectName = "flux",
         objectClass = "data.frame",
-        desc = "",
+        desc = paste(
+          "Dataframe of flux at end of spinup process, ",
+          "all values are set to zero initially",
+          sep = ""
+        ),
         sourceURL = NA
       ),
       createsOutput(
@@ -99,21 +118,14 @@ spinup <- function(sim) {
   box::use(reticulate[dict])
   box::use(libcbmr)
 
-  cbm_exn_parameters <- dict(
-    slow_mixing_rate = sim$slow_mixing_rate,
-    turnover_parameters = sim$turnover_parameters,
-    species = sim$species,
-    root_parameters = sim$root_parameters,
-    decay_parameters = sim$decay_parameters,
-    disturbance_matrix_value = sim$disturbance_matrix_value,
-    disturbance_matrix_association = sim$disturbance_matrix_association
-  )
   cbm_vars <- libcbmr::cbm_exn_spinup(
     dict(
       parameters = sim$spinup_parameters,
       increments = sim$stand_increments
     ),
-    cbm_exn_parameters
+    sim$spinup_ops,
+    sim$spinup_op_sequence,
+    sim$parameters
   )
   sim$pools <- cbm_vars$pools
   sim$flux <- cbm_vars$flux
