@@ -81,12 +81,11 @@ test_that(
       growth_increments = growth_increments,
       spinup_ops = spinup_ops,
       spinup_op_sequence = spinup_op_sequence,
-      parameters = libcbmr::cbm_exn_get_default_parameters(),
+      model_config = libcbmr::cbm_exn_get_default_parameters(),
       require = "PredictiveEcology/SpaDES.core@development",
     )
 
     result <- do.call(simInitAndSpades, out)
     testthat::expect_equal(nrow(result$pools), 2)
-    print(result$pools)
   }
 )

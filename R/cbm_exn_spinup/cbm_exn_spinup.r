@@ -69,6 +69,14 @@ defineModule(
           sep = ""
         ),
         sourceURL = NA
+      ),
+      expectsInput(
+        objectName = "model_config",
+        objectClass = "list",
+        desc = (
+          "definitions for pools/flux_indicators and other model parameters"
+        ),
+        sourceURL = NA
       )
     ),
     outputObjects = bindrows(
@@ -125,7 +133,7 @@ spinup <- function(sim) {
     ),
     sim$spinup_ops,
     sim$spinup_op_sequence,
-    sim$parameters
+    sim$model_config
   )
   sim$pools <- cbm_vars$pools
   sim$flux <- cbm_vars$flux
