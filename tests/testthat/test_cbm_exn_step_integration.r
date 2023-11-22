@@ -74,34 +74,20 @@ test_that(
       modules = "cbm_exn_step",
       times = list(start = 1998, end = 2000),
       packages = "PredictiveEcology/SpaDES.core@development (>= 2.0.2.9005)",
-
+      step_ops = libcbmr::cbm_exn_step_ops(
+        cbm_vars, libcbmr::cbm_exn_get_default_parameters()
+      ),
+      step_dist_ops_sequence = (
+        libcbmr::cbm_exn_get_step_disturbance_ops_sequence()
+      ),
+      step_ops_sequence = libcbmr::cbm_exn_get_step_ops_sequence(),
       pools = cbm_vars$pools,
       flux = cbm_vars$flux,
       state = cbm_vars$state,
       parameters = cbm_vars$parameters,
+      model_config = libcbmr::cbm_exn_get_default_parameters(),
       require = "PredictiveEcology/SpaDES.core@development",
-      # add the defualt parameters for integration testing purposes
-      slow_mixing_rate = read.csv(
-        file.path(param_path, "slow_mixing_rate.csv")
-      ),
-      turnover_parameters = read.csv(
-        file.path(param_path, "turnover_parameters.csv")
-      ),
-      species = read.csv(
-        file.path(param_path, "species.csv")
-      ),
-      root_parameters = read.csv(
-        file.path(param_path, "root_parameters.csv")
-      ),
-      decay_parameters = read.csv(
-        file.path(param_path, "decay_parameters.csv")
-      ),
-      disturbance_matrix_value = read.csv(
-        file.path(param_path, "disturbance_matrix_value.csv")
-      ),
-      disturbance_matrix_association = read.csv(
-        file.path(param_path, "disturbance_matrix_association.csv")
-      )
+
     )
 
     result <- do.call(simInitAndSpades, out)
