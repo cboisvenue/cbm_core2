@@ -68,7 +68,7 @@ defineModule(
       expectsInput(
         objectName = "flux",
         objectClass = "data.frame",
-        desc = "storage for carbon pool flux during the step.  ",
+        desc = "storage for carbon pool flux during the step.",
         sourceURL = NA
       ),
       expectsInput(
@@ -119,7 +119,12 @@ doEvent.cbm_exn_step <- function(sim, eventTime, eventType, debug = TRUE) {
     init = {
       # TODO this is likely not the correct way to structure 
       # the event, need to clarify this
-      step(sim)
+      sim <- SpaDES.core::scheduleEvent(
+        sim, start(sim), "cbm_exn_step", "step"
+      )
+    },
+    step = {
+      sim <- step(sim)
     }
   )
   return(invisible(sim))
