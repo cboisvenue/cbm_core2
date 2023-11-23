@@ -71,16 +71,9 @@ test_that(
         # Require.offlineMode = TRUE,
         spades.moduleCodeChecks = FALSE
       ),
-      modules = "cbm_exn_step",
+      modules = c("cbm_exn_step_ops", "cbm_exn_step"),
       times = list(start = 1998, end = 2000),
       packages = "PredictiveEcology/SpaDES.core@development (>= 2.0.2.9005)",
-      step_ops = libcbmr::cbm_exn_step_ops(
-        cbm_vars, libcbmr::cbm_exn_get_default_parameters()
-      ),
-      step_dist_ops_sequence = (
-        libcbmr::cbm_exn_get_step_disturbance_ops_sequence()
-      ),
-      step_ops_sequence = libcbmr::cbm_exn_get_step_ops_sequence(),
       pools = cbm_vars$pools,
       flux = cbm_vars$flux,
       state = cbm_vars$state,
