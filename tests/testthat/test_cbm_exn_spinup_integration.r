@@ -73,14 +73,12 @@ test_that(
         # Require.offlineMode = TRUE,
         spades.moduleCodeChecks = FALSE
       ),
-      modules = "cbm_exn_spinup",
+      modules = c("cbm_exn_spinup_ops", "cbm_exn_spinup"),
       times = list(start = 1998, end = 2000),
       packages = "PredictiveEcology/SpaDES.core@development (>= 2.0.2.9005)",
 
       spinup_parameters = spinup_parameters,
       growth_increments = growth_increments,
-      spinup_ops = spinup_ops,
-      spinup_op_sequence = spinup_op_sequence,
       model_config = libcbmr::cbm_exn_get_default_parameters(),
       require = "PredictiveEcology/SpaDES.core@development",
     )
