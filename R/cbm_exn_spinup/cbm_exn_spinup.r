@@ -3,10 +3,8 @@ defineModule(
   sim,
   list(
     name = "cbm_exn_spinup",
-    description = paste(
-      "A module that runs CBM-CFS3 spinup routine ",
-      "based on net increments",
-      sep = ""
+    description = (
+      "A module that runs CBM-CFS3 spinup routine "
     ),
     keywords = NA,
     authors = person("", email = "", role = c("aut", "cre")),
